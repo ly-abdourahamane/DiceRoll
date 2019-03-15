@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">DiceRoll</string>
+    <color name="white">#FFFFFF</color>
 </resources>

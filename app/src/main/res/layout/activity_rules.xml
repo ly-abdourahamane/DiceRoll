@@ -4,12 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.android.diceroll.RulesActivity">
+    tools:context="com.android.diceroll.RulesActivity"
+    android:background="@color/white"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="119dp">
 
         <TextView
             android:id="@+id/editText"
@@ -19,19 +23,69 @@
             android:gravity="center"
             android:inputType="textPersonName"
             android:text="Règles du jeu"
+
             android:textAppearance="@android:style/TextAppearance.Material.Large" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Des actions vous sont ensuite proposées ! "
+            android:textAppearance="@android:style/TextAppearance.Material.Medium" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Soyez réactif cela déterminera votre score ! "
+            android:textAppearance="@android:style/TextAppearance.Material.Medium" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
 
         <TextView
             android:id="@+id/rulesTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:text="Lancez les dés en secouant votre téléphone ! Des actions vous sont ensuite proposées ! Soyez réactif cela déterminera votre score ! Penchez votre téléphone a droite, gauche, haut et bas, touchez votre écran ou faites du bruit afin d'avoir le meilleur score possible !" />
+            android:text="Lancez les dés en secouant votre téléphone ! "
+            android:textAppearance="@android:style/TextAppearance.Material.Medium" />
 
         <Space
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Penchez votre téléphone a droite, gauche, haut et bas, touchez votre écran ou faites du bruit afin d'avoir le meilleur score possible !"
+            android:textAppearance="@android:style/TextAppearance.Material.Medium" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="453dp"
+            android:layout_height="206dp"
+            android:contentDescription="@string/app_name"
+            app:srcCompat="@drawable/dicess" />
 
         <Button
             android:id="@+id/button"
