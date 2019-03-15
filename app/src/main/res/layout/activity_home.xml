@@ -12,42 +12,92 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:scaleType="centerCrop"
-        app:srcCompat="@drawable/Dices" />
+        app:srcCompat="@drawable/dices"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp" />
 
     <LinearLayout
-        android:layout_width="371dp"
-        android:layout_height="666dp"
-        android:orientation="vertical"
-        tools:layout_editor_absoluteX="32dp"
-        tools:layout_editor_absoluteY="8dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="150dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:layout_weight="0"
+                android:background="@drawable/six"
+                android:gravity="center"
+                android:text="DiceRoll"
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:layout_editor_absoluteX="32dp"
+            tools:layout_editor_absoluteY="8dp">
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/buttonPlay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="goToPlay"
+                android:text="Jouer !" />
+
+            <Button
+                android:id="@+id/buttonHighScores"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="goToRScores"
+                android:text="Scores" />
+
+            <Button
+                android:id="@+id/buttonAchievements"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="goToUnlocks"
+                android:text="Succès" />
+
+            <Button
+                android:id="@+id/buttonRules"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="goToRules"
+                android:text="Règles du jeu" />
+        </LinearLayout>
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_height="20dp"
+            android:layout_weight="2" />
 
-        <Button
-            android:id="@+id/buttonPlay"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Jouer !" />
-
-        <Button
-            android:id="@+id/buttonHighScores"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Scores" />
-
-        <Button
-            android:id="@+id/buttonAchievements"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Succès" />
-
-        <Button
-            android:id="@+id/buttonRules"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Règles du jeu" />
     </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>
