@@ -10,6 +10,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -20,6 +21,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -34,6 +36,7 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
     private Handler mHandler;
     private ImageView image;
     private TextView scoreText;
+    private ProgressBar progress;
 
     private Point size = new Point();
 
@@ -67,6 +70,9 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
         mHandler = new Handler();
         buttonStart = (Button) findViewById(R.id.startButton);
         scoreText = findViewById(R.id.scoreTextView);
+        progress = findViewById(R.id.progress);
+
+        progress.setMax(100);
 
         sm = (SensorManager) getSystemService(SENSOR_SERVICE);
 
@@ -109,7 +115,10 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        objectiveDone = true;
+        if (state == State.TOUCH) {
+            objectiveDone = true;
+            score++;
+        }
         return false;
     }
 
@@ -120,6 +129,7 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
                 amp = 0.0;
             } else if(amp > 100 && state == State.SOUND){
                 objectiveDone = true;
+                score++;
             }
 
             mHandler.postDelayed(eventSound, 250);
@@ -176,19 +186,35 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
                     switch (state) {
                         case UP:
                             Log.d("DEBUG MVT", y+"");
-                            objectiveDone = (y <= -5);
+                            if (!objectiveDone) {
+                                objectiveDone = (y <= -5);
+                                score++;
+                            }
+
                             break;
                         case DOWN:
                             Log.d("DEBUG MVT", y+"");
-                            objectiveDone = (y >= 5);
+                            if (!objectiveDone) {
+                                objectiveDone = (y >= 5);
+                                score++;
+                            }
+
                             break;
                         case RIGHT:
                             Log.d("DEBUG MVT", x+"");
-                            objectiveDone = (x >= 5);
+                            if (!objectiveDone) {
+                                objectiveDone = (x >= 5);
+                                score++;
+                            }
+
                             break;
                         case LEFT:
                             Log.d("DEBUG MVT", x+"");
-                            objectiveDone = (x <= -5);
+                            if (!objectiveDone) {
+                                objectiveDone = (x <= -5);
+                                score++;
+                            }
+
                             break;
                         default: //rien
                             break;
@@ -203,6 +229,7 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
     private Handler shakeDiceHandler;
     private Handler gameWaitHandler;
     Timer t;
+    int progressPct = 0;
 
     /**
      * Partie
@@ -224,6 +251,7 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
                 public void run() {
                 state = diceReturnState;
                 Log.d("MINIJEU", state.name());
+                progressTimer.start();
                 // temps imparti avant échec du jeu
                 gameWaitHandler.postDelayed(new Runnable() {
                     @Override
@@ -233,14 +261,16 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
                             Log.d("PERDU, FIN JEU", state.name());
                             stopGame();
                             t.cancel();
+                        } else {
+                            updateScoreDisplay();
+                            objectiveDone = false;
                         }
                     }
-                }, 3*TIMEOUT/2);
+                }, TIMEOUT);
                 if (objectiveDone) {
                     Log.d("TROUVE", state.name());
                     // si objectif réussi alors annuler le timeout
                     gameWaitHandler.removeCallbacksAndMessages(null);
-                    score++;
                     updateScoreDisplay();
                     objectiveDone = false;
                 }
@@ -256,6 +286,29 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
         }, 0, TIMEOUT * 3);
     }
 
+    CountDownTimer progressTimer = new CountDownTimer(TIMEOUT, TIMEOUT/20) {
+        @Override
+        public void onTick(long l) {
+            progressPct = progressPct + (TIMEOUT/20)*100 / TIMEOUT;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    progress.setProgress(progressPct);
+                }
+            });
+        }
+
+        @Override
+        public void onFinish() {
+            progressPct = 0;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    progress.setProgress(0);
+                }
+            });
+        }
+    };
 
     /**
      * Attend
