@@ -16,7 +16,7 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity implements View.OnTouchListener {
 
-    private MediaRecorder mRecorder= new MediaRecorder();;
+    private MediaRecorder mRecorder;
     private Handler mHandler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
