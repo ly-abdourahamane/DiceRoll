@@ -24,7 +24,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -38,7 +37,7 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
     private Button buttonStart;
     private Handler mHandler;
     private ImageView image;
-    private TextView scoreText;
+    private Button scoreText;
     private ProgressBar progress;
 
     private Point size = new Point();
@@ -118,7 +117,7 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if (state == State.TOUCH) {
+        if (state == State.TOUCH && !objectiveDone) {
             objectiveDone = true;
             score++;
         }
@@ -130,7 +129,7 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
             Double amp = 190 * Math.log10(mRecorder.getMaxAmplitude() / 2700.0);
             if(amp < 0){
                 amp = 0.0;
-            } else if(amp > 100 && state == State.SOUND){
+            } else if(amp > 100 && state == State.SOUND && !objectiveDone){
                 objectiveDone = true;
                 score++;
             }
@@ -191,7 +190,7 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
                             Log.d("DEBUG MVT", y+"");
                             if (!objectiveDone) {
                                 objectiveDone = (y <= -5);
-                                score++;
+                                if (objectiveDone) score++;
                             }
 
                             break;
@@ -199,7 +198,7 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
                             Log.d("DEBUG MVT", y+"");
                             if (!objectiveDone) {
                                 objectiveDone = (y >= 5);
-                                score++;
+                                if (objectiveDone) score++;
                             }
 
                             break;
@@ -207,7 +206,7 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
                             Log.d("DEBUG MVT", x+"");
                             if (!objectiveDone) {
                                 objectiveDone = (x >= 5);
-                                score++;
+                                if (objectiveDone) score++;
                             }
 
                             break;
@@ -215,7 +214,7 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
                             Log.d("DEBUG MVT", x+"");
                             if (!objectiveDone) {
                                 objectiveDone = (x <= -5);
-                                score++;
+                                if (objectiveDone) score++;
                             }
 
                             break;
