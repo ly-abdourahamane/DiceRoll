@@ -8,6 +8,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -36,8 +37,11 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
 
     private float MULTIPLIER = 7;
 
+    private static final String SOUND_URL = "raw/shake_dice.mp3";
+
     private Button buttonStart;
     private boolean gameStarted = false;
+    private MediaPlayer mSound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +52,6 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
         buttonStart = (Button) findViewById(R.id.startButton);
 
         sm = (SensorManager) getSystemService(SENSOR_SERVICE);
-
 
         View view = findViewById(R.id.diceMainLayout);
         view.setOnTouchListener(this);
@@ -80,7 +83,6 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
     }
     private Runnable mSleepTask = new Runnable() {
         public void run() {
-
             mRecorder.start();
             mHandler.postDelayed(eventSound, 250);
         }
@@ -92,6 +94,7 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
         float posy = event.getY();
         int res = (int) ((Math.abs(posx) +Math.abs(posy)) % 6) + 1;
         changeDiceWithValue(res);
+
         return false;
     }
 
@@ -151,7 +154,6 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
 
                 int res = (int) ((Math.abs(x) +Math.abs(y) + Math.abs(z)) % 6) + 1;
                 changeDiceWithValue(res);
-
                 gotoLocation(-x, y);
             }
         }
@@ -160,11 +162,13 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
     private void gotoLocation(float x, float y) {
         double next_tick = System.currentTimeMillis();
         int loops = 0;
-        while (System.currentTimeMillis() > next_tick*2
-        && loops < MAX_FRAMESKIP) {
+        while (System.currentTimeMillis() > next_tick * 2
+                && loops < MAX_FRAMESKIP) {
             next_tick += SKIP_TICKS;
             loops++;
         }
+
+        System.out.println(" x " + x + " y " + y);
         changeImageLocation(x, y);
     }
 
@@ -217,7 +221,6 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
         sm.registerListener(this, accelSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
-
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
@@ -240,6 +243,15 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
         } else {
             buttonStart.setText("Start");
         }
+    }
 
+    public void playGameSound(View view) {
+        mSound = MediaPlayer.create(getApplicationContext(), R.raw.shake_dice);
+        mSound.start();
+        mSound.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            public void onCompletion(MediaPlayer mp) {
+                mp.release();
+            };
+        });
     }
 }
