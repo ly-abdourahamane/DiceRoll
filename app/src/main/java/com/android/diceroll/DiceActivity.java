@@ -175,16 +175,20 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
                     // tourner vers une direction
                     switch (state) {
                         case UP:
-                            objectiveDone = (y >= 1);
+                            Log.d("DEBUG MVT", y+"");
+                            objectiveDone = (y <= -5);
                             break;
                         case DOWN:
-                            objectiveDone = (y <= -1);
+                            Log.d("DEBUG MVT", y+"");
+                            objectiveDone = (y >= 5);
                             break;
                         case RIGHT:
-                            objectiveDone = (x >= 1);
+                            Log.d("DEBUG MVT", x+"");
+                            objectiveDone = (x >= 5);
                             break;
                         case LEFT:
-                            objectiveDone = (x <= -1);
+                            Log.d("DEBUG MVT", x+"");
+                            objectiveDone = (x <= -5);
                             break;
                         default: //rien
                             break;
@@ -211,39 +215,43 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
         t.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                Log.d("ROLL", state.name());
-                state = State.DICEROLL;
-                // lance le dé pour 2 secondes
-                playGameSound(null);
-                shakeDiceHandler.postDelayed(new Runnable() {
+            Log.d("ROULER LES DES", state.name());
+            state = State.DICEROLL;
+            // lance le dé pour 2 secondes
+            playGameSound(null);
+            shakeDiceHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                state = diceReturnState;
+                Log.d("MINIJEU", state.name());
+                // temps imparti avant échec du jeu
+                gameWaitHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                    state = diceReturnState;
-                    Log.d("MINIJEU", state.name());
-                    // temps imparti avant échec du jeu
-                    gameWaitHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.d("FIN", state.name());
+                        Log.d("TIME UP", state.name());
+                        if (!objectiveDone) {
+                            Log.d("PERDU, FIN JEU", state.name());
                             stopGame();
+                            t.cancel();
                         }
-                    }, TIMEOUT/2);
-                    if (objectiveDone) {
-                        Log.d("TROUVE", state.name());
-                        // si objectif réussi alors annuler le timeout
-                        gameWaitHandler.removeCallbacksAndMessages(null);
-                        score++;
-                        updateScoreDisplay();
-                        objectiveDone = false;
                     }
-                    }
-                }, TIMEOUT);
-
-                Log.d("FIN SCHEDULE", state.name());
-                updateScoreDisplay();
-                if (!gameStarted) {
-                    t.purge();
+                }, 3*TIMEOUT/2);
+                if (objectiveDone) {
+                    Log.d("TROUVE", state.name());
+                    // si objectif réussi alors annuler le timeout
+                    gameWaitHandler.removeCallbacksAndMessages(null);
+                    score++;
+                    updateScoreDisplay();
+                    objectiveDone = false;
                 }
+                }
+            }, TIMEOUT);
+
+            Log.d("FIN TOUR", state.name());
+            updateScoreDisplay();
+            if (!gameStarted) {
+                t.cancel();
+            }
             }
         }, 0, TIMEOUT * 3);
     }
@@ -357,7 +365,7 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
             launchGame();
         } else {
             stopGame();
-            t.purge();
+            t.cancel();
         }
 
 
