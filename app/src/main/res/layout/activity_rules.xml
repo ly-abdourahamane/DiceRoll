@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.android.diceroll.RulesActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:gravity="center"
+            android:inputType="textPersonName"
+            android:text="Règles du jeu"
+            android:textAppearance="@android:style/TextAppearance.Material.Large" />
+
+        <TextView
+            android:id="@+id/rulesTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:text="Lancez les dés en secouant votre téléphone ! Des actions vous sont ensuite proposées ! Soyez réactif cela déterminera votre score ! Penchez votre téléphone a droite, gauche, haut et bas, touchez votre écran ou faites du bruit afin d'avoir le meilleur score possible !" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="goToRules"
+            android:text="J'ai compris" />
+
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>
