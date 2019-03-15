@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
     private Runnable mSleepTask = new Runnable() {
         public void run() {
+
             mRecorder.start();
             mHandler.postDelayed(eventSound, 1000);
         }
