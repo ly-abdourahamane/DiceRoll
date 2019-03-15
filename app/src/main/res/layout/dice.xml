@@ -5,6 +5,7 @@
     android:id="@+id/diceMainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="wrap_content"
@@ -13,6 +14,7 @@
         app:srcCompat="@drawable/dices"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="0dp" />
+
     <ImageView
         android:id="@+id/imgDe"
         android:layout_width="165dp"
@@ -56,15 +58,13 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="151dp"
         android:layout_height="55dp"
-        android:layout_marginStart="130dp"
-        android:layout_marginTop="575dp"
-        android:layout_marginEnd="130dp"
-        android:layout_marginBottom="101dp"
+        android:layout_marginStart="125dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="136dp"
+        android:layout_marginBottom="628dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
