@@ -3,6 +3,7 @@ package com.android.diceroll;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -15,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,12 +28,24 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
     private MediaRecorder mRecorder;
     private Handler mHandler;
     private ImageView image;
+    private Point size = new Point();
+
+    private static final int TICKS_PER_SECOND = 25;
+    private static final int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
+    private static final int MAX_FRAMESKIP = 5;
+
+    private float MULTIPLIER = 7;
+
+    private Button buttonStart;
+    private boolean gameStarted = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dice);
         image = findViewById(R.id.imgDe);
         mHandler = new Handler();
+        buttonStart = (Button) findViewById(R.id.startButton);
 
         sm = (SensorManager) getSystemService(SENSOR_SERVICE);
 
@@ -61,6 +75,8 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
             mSleepTask.run();
 
         }
+
+        getWindowManager().getDefaultDisplay().getSize(size);
     }
     private Runnable mSleepTask = new Runnable() {
         public void run() {
@@ -135,29 +151,61 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
 
                 int res = (int) ((Math.abs(x) +Math.abs(y) + Math.abs(z)) % 6) + 1;
                 changeDiceWithValue(res);
+
+                gotoLocation(-x, y);
             }
         }
+    }
+
+    private void gotoLocation(float x, float y) {
+        double next_tick = System.currentTimeMillis();
+        int loops = 0;
+        while (System.currentTimeMillis() > next_tick*2
+        && loops < MAX_FRAMESKIP) {
+            next_tick += SKIP_TICKS;
+            loops++;
+        }
+        changeImageLocation(x, y);
+    }
+
+    private void changeImageLocation(float x, float y) {
+        float vx = x * MULTIPLIER + image.getX();
+        float vy = y * MULTIPLIER + image.getY();
+        if (vx < 0) {
+            vx = 0;
+        } else if (vx >= size.x - image.getWidth()) {
+            vx = size.x - image.getWidth();
+        }
+
+        if (vy < 0) {
+            vy = 0;
+        } else if (vy >= size.y - image.getHeight()) {
+            vy = size.y - image.getHeight();
+        }
+
+        image.setX(vx);
+        image.setY(vy);
     }
 
     private void changeDiceWithValue(int value) {
         switch(value) {
             case 1:
-                image.setImageResource(R.drawable.one);
+                image.setImageResource(R.drawable.onesound);
                 break;
             case 2:
-                image.setImageResource(R.drawable.two);
+                image.setImageResource(R.drawable.twotouch);
                 break;
             case 3:
-                image.setImageResource(R.drawable.three);
+                image.setImageResource(R.drawable.upthree);
                 break;
             case 4:
-                image.setImageResource(R.drawable.four);
+                image.setImageResource(R.drawable.rightfour);
                 break;
             case 5:
-                image.setImageResource(R.drawable.five);
+                image.setImageResource(R.drawable.downfive);
                 break;
             default:
-                image.setImageResource(R.drawable.six);
+                image.setImageResource(R.drawable.leftsix);
                 break;
         }
     }
@@ -182,5 +230,16 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
         int nombreAleatoire = rand.nextInt(max - min + 1) + min;
 
         return nombreAleatoire;
+    }
+
+    public void startOrStopGame(View view) {
+        gameStarted = !gameStarted;
+
+        if(gameStarted) {
+            buttonStart.setText("Sotp");
+        } else {
+            buttonStart.setText("Start");
+        }
+
     }
 }
