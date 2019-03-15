@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.Timer;
@@ -231,6 +232,8 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
                         Log.d("TIME UP", state.name());
                         if (!objectiveDone) {
                             Log.d("PERDU, FIN JEU", state.name());
+                            Toast.makeText(DiceActivity.this, "Vous avez perdu, jouez encore" +
+                                    "", Toast.LENGTH_LONG).show();
                             stopGame();
                             t.cancel();
                         }
@@ -238,7 +241,7 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
                 }, 3*TIMEOUT/2);
                 if (objectiveDone) {
                     Log.d("TROUVE", state.name());
-                    // si objectif réussi alors annuler le timeout
+                    Toast.makeText(DiceActivity.this, "Bravo vous avez trouvé", Toast.LENGTH_LONG).show();
                     gameWaitHandler.removeCallbacksAndMessages(null);
                     score++;
                     updateScoreDisplay();
