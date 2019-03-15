@@ -38,6 +38,9 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
 
     private Button buttonStart;
     private boolean gameStarted = false;
+    private boolean diceLaunched = false;
+
+    private State state = State.STOP;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +91,7 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+
         float posx = event.getX();
         float posy = event.getY();
         int res = (int) ((Math.abs(posx) +Math.abs(posy)) % 6) + 1;
@@ -97,13 +101,11 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
 
     private Runnable eventSound = new Runnable() {
         public void run() {
-            boolean talked = false;
             Double amp = 190 * Math.log10(mRecorder.getMaxAmplitude() / 2700.0);
-            if(amp<0){
+            if(amp < 0){
                 amp = 0.0;
-            }
-            if(amp >100){
-                talked = true;
+            } else if(amp > 100){
+
             }
 
             mHandler.postDelayed(eventSound, 250);
@@ -149,25 +151,57 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
                 float y = values[1];
                 float z = values[2];
 
-                int res = (int) ((Math.abs(x) +Math.abs(y) + Math.abs(z)) % 6) + 1;
-                changeDiceWithValue(res);
+                if (state == State.DICEROLL) {
+                    // lancer de dés
+                    int res = (int) ((Math.abs(x) + Math.abs(y) + Math.abs(z)) % 6) + 1;
 
-                gotoLocation(-x, y);
+                    gotoLocation(-x, y);
+                    changeDiceWithValue(res);
+                } else if (state == State.DIRECTION) {
+                    // tourner vers une direction
+
+                }
             }
         }
     }
 
-    private void gotoLocation(float x, float y) {
+    /**
+     * Partie lancé de dé
+     */
+    private void runDiceRollGame() {
+
+    }
+
+    /**
+     * Attend
+     */
+    private void waitThis() {
         double next_tick = System.currentTimeMillis();
         int loops = 0;
         while (System.currentTimeMillis() > next_tick*2
-        && loops < MAX_FRAMESKIP) {
+                && loops < MAX_FRAMESKIP) {
             next_tick += SKIP_TICKS;
             loops++;
         }
+    }
+
+    /**
+     * Va à la position x,y (sans dépasser de l'écran)
+     *
+     * @param x
+     * @param y
+     */
+    private void gotoLocation(float x, float y) {
+        waitThis();
         changeImageLocation(x, y);
     }
 
+    /**
+     * change la position de l'image
+     *
+     * @param x
+     * @param y
+     */
     private void changeImageLocation(float x, float y) {
         float vx = x * MULTIPLIER + image.getX();
         float vy = y * MULTIPLIER + image.getY();
@@ -187,6 +221,11 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
         image.setY(vy);
     }
 
+    /**
+     * Change l'image du dé (avec valeurs entre 1 et 6)
+     *
+     * @param value
+     */
     private void changeDiceWithValue(int value) {
         switch(value) {
             case 1:
@@ -223,23 +262,21 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
 
     }
 
-    public int faceRandom() {
-        int max = 6;
-        int min = 1;
-        Random rand = new Random();
-        int nombreAleatoire = rand.nextInt(max - min + 1) + min;
-
-        return nombreAleatoire;
-    }
-
+    /**
+     * démarre/arrête le jeu
+     *
+     * @param view
+     */
     public void startOrStopGame(View view) {
         gameStarted = !gameStarted;
 
         if(gameStarted) {
-            buttonStart.setText("Sotp");
+            buttonStart.setText(TextConstants.START);
+            state = State.DICEROLL;
+            runDiceRollGame();
         } else {
-            buttonStart.setText("Start");
+            buttonStart.setText(TextConstants.STOP);
+            state = State.STOP;
         }
-
     }
 }
