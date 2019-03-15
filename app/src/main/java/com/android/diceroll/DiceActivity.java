@@ -8,6 +8,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -36,11 +37,14 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
 
     private float MULTIPLIER = 7;
 
+    private static final String SOUND_URL = "raw/shake_dice.mp3";
+
     private Button buttonStart;
     private boolean gameStarted = false;
     private boolean diceLaunched = false;
 
     private State state = State.STOP;
+    private MediaPlayer mSound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +100,7 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
         float posy = event.getY();
         int res = (int) ((Math.abs(posx) +Math.abs(posy)) % 6) + 1;
         changeDiceWithValue(res);
+
         return false;
     }
 
@@ -164,6 +169,8 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
             }
         }
     }
+
+
 
     /**
      * Partie lancé de dé
@@ -278,5 +285,15 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
             buttonStart.setText(TextConstants.STOP);
             state = State.STOP;
         }
+    }
+
+    public void playGameSound(View view) {
+        mSound = MediaPlayer.create(getApplicationContext(), R.raw.shake_dice);
+        mSound.start();
+        mSound.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            public void onCompletion(MediaPlayer mp) {
+                mp.release();
+            };
+        });
     }
 }
