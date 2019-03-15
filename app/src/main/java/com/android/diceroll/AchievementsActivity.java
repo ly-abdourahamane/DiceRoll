@@ -17,7 +17,7 @@ public class AchievementsActivity extends AppCompatActivity {
         SharedPreferences sharedPref =
                 getApplicationContext().getSharedPreferences("TheFileName", Context.MODE_PRIVATE);
         int musicState = sharedPref.getInt("score", 0);
-        if (musicState >= 0){
+        if (musicState > 0){
             CheckBox c1 = findViewById(R.id.checkBox1);
             c1.setChecked(true);
         }
