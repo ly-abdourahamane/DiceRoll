@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,12 +27,16 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
     private MediaRecorder mRecorder;
     private Handler mHandler;
     private ImageView image;
+    private Button buttonStart;
+    private boolean gameStarted = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dice);
         image = findViewById(R.id.imgDe);
         mHandler = new Handler();
+        buttonStart = (Button) findViewById(R.id.startButton);
 
         sm = (SensorManager) getSystemService(SENSOR_SERVICE);
 
@@ -182,5 +187,16 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
         int nombreAleatoire = rand.nextInt(max - min + 1) + min;
 
         return nombreAleatoire;
+    }
+
+    public void startOrStopGame(View view) {
+        gameStarted = !gameStarted;
+
+        if(gameStarted) {
+            buttonStart.setText("Sotp");
+        } else {
+            buttonStart.setText("Start");
+        }
+
     }
 }
