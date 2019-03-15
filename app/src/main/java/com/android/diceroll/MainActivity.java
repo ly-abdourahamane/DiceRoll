@@ -157,6 +157,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 viewAccel2.setText("y " + y);
                 viewAccel3.setText("z " + z);
                 viewAccel4.setText("y + y + z " + (x+y+z));
+
+                getPhoneAxe(x, y, z);
             }
         }
     }
@@ -181,5 +183,22 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         int nombreAleatoire = rand.nextInt(max - min + 1) + min;
 
         return nombreAleatoire;
+    }
+
+
+    public void getPhoneAxe(float x, float y, float z) {
+
+        if (z > 8 && z < 12 && x < 1 && y < 1) {
+            viewAccel4.setText("plat");
+        } else if (x >= 5 && y < 2) {
+            viewAccel1.setText("gauche");
+
+        } else if (x < 0 && y >= 1) {
+            viewAccel2.setText("droite");
+
+
+        } else if (x < 1 && z < 10) {
+            viewAccel3.setText("haut");
+        }
     }
 }
