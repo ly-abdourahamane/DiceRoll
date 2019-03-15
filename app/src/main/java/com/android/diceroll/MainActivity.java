@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         public void run() {
 
             mRecorder.start();
-            mHandler.postDelayed(eventSound, 1000);
+            mHandler.postDelayed(eventSound, 250);
         }
     };
 
@@ -73,12 +73,25 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     private Runnable eventSound = new Runnable() {
         public void run() {
+            boolean talked = false;
             Double amp = 190 * Math.log10(mRecorder.getMaxAmplitude() / 2700.0);
+            if(amp<0){
+                amp = 0.0;
+            }
+            if(amp >100){
+                talked = true;
+            }
             TextView b = findViewById(R.id.textView10);
-            b.setText("Sound "+ amp  );
+            if(talked){
+                b.setText("PARLÉ"+ amp);
+
+            }else{
+                b.setText("pas parlé "+ amp);
+
+            }
 
 
-            mHandler.postDelayed(eventSound, 1000);
+            mHandler.postDelayed(eventSound, 250);
         }
     };
 
