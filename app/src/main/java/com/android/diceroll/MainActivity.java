@@ -15,6 +15,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private SensorManager sm = null;
     TextView viewAccel1;
     TextView viewAccel2;
+    TextView viewAccel3;
+    TextView viewAccel4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,14 +27,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         viewAccel1 = (TextView) findViewById(R.id.textViewAccel1);
         viewAccel2 = (TextView) findViewById(R.id.textViewAccel2);
+        viewAccel3 = (TextView) findViewById(R.id.textViewAccel3);
+        viewAccel4 = (TextView) findViewById(R.id.textViewAccel4);
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
         int sensor = event.sensor.getType();
         float [] values = event.values;
-
-        System.out.println(" " + values.length + " *** " +values[2]);
 
         synchronized (this) {
             if (sensor == Sensor.TYPE_ACCELEROMETER) {
@@ -41,7 +43,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 float z = values[2];
 
                 viewAccel1.setText("x " + x);
-                viewAccel2.setText("y " + y + " z " + z);
+                viewAccel2.setText("y " + y);
+                viewAccel3.setText("z " + z);
+                viewAccel4.setText("y + y + z " + (x+y+z));
             }
         }
     }
