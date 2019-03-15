@@ -1,12 +1,14 @@
 package com.android.diceroll;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -43,6 +45,8 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
 
     private float MULTIPLIER = 11;
 
+    private static final String SOUND_URL = "raw/shake_dice.mp3";
+
     // booleans
     private boolean gameStarted = false;
     private boolean objectiveDone = false;
@@ -53,6 +57,7 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
 
     // score
     private int score = 0;
+    private MediaPlayer mSound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +101,7 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
     }
     private Runnable mSleepTask = new Runnable() {
         public void run() {
+
             mRecorder.start();
             mHandler.postDelayed(eventSound, 250);
         }
@@ -108,6 +114,7 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
         float posy = event.getY();
         int res = (int) ((Math.abs(posx) +Math.abs(posy)) % 6) + 1;
         changeDiceWithValue(res);
+
         return false;
     }
 
@@ -191,6 +198,8 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
             }
         }
     }
+
+
 
     private Handler shakeDiceHandler;
     private Handler gameWaitHandler;
@@ -378,5 +387,15 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
             }
         });
 
+    }
+
+    public void playGameSound(View view) {
+        mSound = MediaPlayer.create(getApplicationContext(), R.raw.shake_dice);
+        mSound.start();
+        mSound.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            public void onCompletion(MediaPlayer mp) {
+                mp.release();
+            };
+        });
     }
 }

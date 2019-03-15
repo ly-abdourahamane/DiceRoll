@@ -10,6 +10,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:background="@color/white"
+
         android:theme="@style/AppTheme">
         <activity android:name=".AchievementsActivity"></activity>
         <activity android:name=".ScoresActivity"  android:screenOrientation="portrait"/>
