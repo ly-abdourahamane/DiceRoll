@@ -192,8 +192,6 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
     private Handler shakeDiceHandler;
     private Handler gameWaitHandler;
 
-    private Thread diceLaunchThread;
-
     /**
      * Partie
      */
@@ -201,12 +199,14 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
         while (gameStarted) {
             state = State.DICEROLL;
             shakeDiceHandler = new Handler();
+
             // lance le dé pour 2 secondes
             shakeDiceHandler.postAtTime(new Runnable() {
                 @Override
                 public void run() {
                     state = diceReturnState;
                     gameWaitHandler = new Handler();
+
                     // temps imparti avant échec du jeu
                     gameWaitHandler.postAtTime(new Runnable() {
                         @Override
