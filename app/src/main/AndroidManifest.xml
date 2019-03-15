@@ -12,11 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".AchievementsActivity"></activity>
-        <activity android:name=".ScoresActivity" />
-        <activity android:name=".RulesActivity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".DiceActivity" />
-        <activity android:name=".HomeActivity">
+        <activity android:name=".ScoresActivity"  android:screenOrientation="portrait"/>
+        <activity android:name=".RulesActivity"  android:screenOrientation="portrait"/>
+        <activity android:name=".MainActivity"  android:screenOrientation="portrait"/>
+        <activity android:name=".DiceActivity"  android:screenOrientation="portrait"/>
+        <activity android:name=".HomeActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
