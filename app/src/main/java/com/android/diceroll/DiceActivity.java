@@ -109,12 +109,7 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-
-        float posx = event.getX();
-        float posy = event.getY();
-        int res = (int) ((Math.abs(posx) +Math.abs(posy)) % 6) + 1;
-        changeDiceWithValue(res);
-
+        objectiveDone = true;
         return false;
     }
 
@@ -222,31 +217,31 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
                 shakeDiceHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        state = diceReturnState;
-                        Log.d("MINIJEU", state.name());
-                        // temps imparti avant échec du jeu
-                        gameWaitHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                Log.d("FIN", state.name());
-                                stopGame();
-                            }
-                        }, TIMEOUT);
-                        if (objectiveDone) {
-                            Log.d("TROUVE", state.name());
-                            // si objectif réussi alors annuler le timeout
-                            gameWaitHandler.removeCallbacksAndMessages(null);
-                            score++;
-                            updateScoreDisplay();
-                            objectiveDone = false;
+                    state = diceReturnState;
+                    Log.d("MINIJEU", state.name());
+                    // temps imparti avant échec du jeu
+                    gameWaitHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("FIN", state.name());
+                            stopGame();
                         }
+                    }, TIMEOUT/2);
+                    if (objectiveDone) {
+                        Log.d("TROUVE", state.name());
+                        // si objectif réussi alors annuler le timeout
+                        gameWaitHandler.removeCallbacksAndMessages(null);
+                        score++;
+                        updateScoreDisplay();
+                        objectiveDone = false;
+                    }
                     }
                 }, TIMEOUT);
 
                 Log.d("FIN SCHEDULE", state.name());
                 updateScoreDisplay();
                 if (!gameStarted) {
-                    t.cancel();
+                    t.purge();
                 }
             }
         }, 0, TIMEOUT * 3);
@@ -360,9 +355,8 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
             buttonStart.setText(TextConstants.STOP);
             launchGame();
         } else {
-            gameStarted = false;
             stopGame();
-            t.cancel();
+            t.purge();
         }
 
 
@@ -372,6 +366,7 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
      * Arrête le jeu
      */
     private void stopGame() {
+        gameStarted = false;
         buttonStart.setText(TextConstants.START);
         state = State.STOP;
     }
