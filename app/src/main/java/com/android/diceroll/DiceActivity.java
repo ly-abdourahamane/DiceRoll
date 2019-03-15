@@ -204,25 +204,25 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
         gameWaitHandler = new Handler();
 
         t = new Timer();
-        t.schedule(new TimerTask() {
+        t.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 Log.d("ROLL", state.name());
                 state = State.DICEROLL;
                 // lance le dé pour 2 secondes
-                shakeDiceHandler.postAtTime(new Runnable() {
+                shakeDiceHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         state = diceReturnState;
                         Log.d("MINIJEU", state.name());
                         // temps imparti avant échec du jeu
-                        gameWaitHandler.postAtTime(new Runnable() {
+                        gameWaitHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 Log.d("FIN", state.name());
                                 stopGame();
                             }
-                        }, System.currentTimeMillis() + TIMEOUT);
+                        }, TIMEOUT);
                         if (objectiveDone) {
                             Log.d("TROUVE", state.name());
                             // si objectif réussi alors annuler le timeout
@@ -232,14 +232,15 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
                             objectiveDone = false;
                         }
                     }
-                }, System.currentTimeMillis() + TIMEOUT);
+                }, TIMEOUT);
 
+                Log.d("FIN SCHEDULE", state.name());
                 updateScoreDisplay();
                 if (!gameStarted) {
                     t.cancel();
                 }
             }
-        }, TIMEOUT * 3);
+        }, 0, TIMEOUT * 3);
     }
 
 
@@ -352,6 +353,7 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
         } else {
             gameStarted = false;
             stopGame();
+            t.cancel();
         }
 
 
