@@ -1,7 +1,9 @@
 package com.android.diceroll;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.hardware.Sensor;
@@ -23,6 +25,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.Timer;
@@ -259,6 +262,8 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
                         Log.d("TIME UP", state.name());
                         if (!objectiveDone) {
                             Log.d("PERDU, FIN JEU", state.name());
+                            Toast.makeText(DiceActivity.this, "Vous avez perdu, jouez encore" +
+                                    "", Toast.LENGTH_LONG).show();
                             stopGame();
                             t.cancel();
                         } else {
@@ -269,7 +274,7 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
                 }, TIMEOUT);
                 if (objectiveDone) {
                     Log.d("TROUVE", state.name());
-                    // si objectif réussi alors annuler le timeout
+                    Toast.makeText(DiceActivity.this, "Bravo vous avez trouvé", Toast.LENGTH_LONG).show();
                     gameWaitHandler.removeCallbacksAndMessages(null);
                     updateScoreDisplay();
                     objectiveDone = false;
@@ -431,6 +436,22 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
         gameStarted = false;
         buttonStart.setText(TextConstants.START);
         state = State.STOP;
+        SharedPreferences sharedPref =
+                getApplicationContext().getSharedPreferences("TheFileName", Context.MODE_PRIVATE);
+
+        int musicState = sharedPref.getInt("score", 0);
+        if(musicState > score){
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putInt("score", musicState);
+            editor.apply();
+        }else{
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putInt("score", score);
+            editor.apply();
+        }
+
+
+
     }
 
     /**
