@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +21,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class DiceActivity extends AppCompatActivity implements View.OnTouchListener, SensorEventListener {
     // components
@@ -191,47 +194,54 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
 
     private Handler shakeDiceHandler;
     private Handler gameWaitHandler;
+    Timer t;
 
     /**
      * Partie
      */
     private void launchGame() {
-        while (gameStarted) {
-            state = State.DICEROLL;
-            shakeDiceHandler = new Handler();
+        shakeDiceHandler = new Handler();
+        gameWaitHandler = new Handler();
 
-            // lance le dé pour 2 secondes
-            shakeDiceHandler.postAtTime(new Runnable() {
-                @Override
-                public void run() {
-                    state = diceReturnState;
-                    gameWaitHandler = new Handler();
-
-                    // temps imparti avant échec du jeu
-                    gameWaitHandler.postAtTime(new Runnable() {
-                        @Override
-                        public void run() {
-                            stopGame();
+        t = new Timer();
+        t.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Log.d("ROLL", state.name());
+                state = State.DICEROLL;
+                // lance le dé pour 2 secondes
+                shakeDiceHandler.postAtTime(new Runnable() {
+                    @Override
+                    public void run() {
+                        state = diceReturnState;
+                        Log.d("MINIJEU", state.name());
+                        // temps imparti avant échec du jeu
+                        gameWaitHandler.postAtTime(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.d("FIN", state.name());
+                                stopGame();
+                            }
+                        }, System.currentTimeMillis() + TIMEOUT);
+                        if (objectiveDone) {
+                            Log.d("TROUVE", state.name());
+                            // si objectif réussi alors annuler le timeout
+                            gameWaitHandler.removeCallbacksAndMessages(null);
+                            score++;
+                            updateScoreDisplay();
+                            objectiveDone = false;
                         }
-                    }, System.currentTimeMillis() + TIMEOUT);
-                    if (objectiveDone) {
-                        // si objectif réussi alors annuler le timeout
-                        gameWaitHandler.removeCallbacksAndMessages(null);
-                        objectiveDone = false;
                     }
+                }, System.currentTimeMillis() + TIMEOUT);
+
+                updateScoreDisplay();
+                if (!gameStarted) {
+                    t.cancel();
                 }
-            }, System.currentTimeMillis() + TIMEOUT);
-
-            updateScoreDisplay();
-
-            // attente
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
-        }
+        }, TIMEOUT * 3);
     }
+
 
     /**
      * Attend
@@ -337,7 +347,7 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
     public void startOrStopGame(View view) {
         if(!gameStarted) {
             gameStarted = true;
-            buttonStart.setText(TextConstants.START);
+            buttonStart.setText(TextConstants.STOP);
             launchGame();
         } else {
             gameStarted = false;
@@ -351,7 +361,7 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
      * Arrête le jeu
      */
     private void stopGame() {
-        buttonStart.setText(TextConstants.STOP);
+        buttonStart.setText(TextConstants.START);
         state = State.STOP;
     }
 
@@ -359,6 +369,12 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
      * Màj affichage du score
      */
     private void updateScoreDisplay() {
-        scoreText.setText(TextConstants.SCORE + score);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                scoreText.setText(TextConstants.SCORE + score);
+            }
+        });
+
     }
 }
