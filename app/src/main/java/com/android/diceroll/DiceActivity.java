@@ -219,6 +219,7 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
                 Log.d("ROLL", state.name());
                 state = State.DICEROLL;
                 // lance le dé pour 2 secondes
+                playGameSound(null);
                 shakeDiceHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
