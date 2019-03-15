@@ -42,6 +42,8 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
 
     private Point size = new Point();
 
+    private boolean isSoundActivated = true;
+
     // constants
     private static final int TIMEOUT = 2000;
     private static final int TICKS_PER_SECOND = 25;
@@ -88,30 +90,36 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
                     new String[]{Manifest.permission.RECORD_AUDIO},
                     1);
         } else {
-
-            mRecorder = new MediaRecorder();
-            mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-            mRecorder.setOutputFile("/dev/null");
-            try {
-                mRecorder.prepare();
-            } catch (IllegalStateException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (isSoundActivated) {
+                isSoundActivated = false;
+                mRecorder = new MediaRecorder();
+                mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+                mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+                mRecorder.setOutputFile("/dev/null");
+                try {
+                    mRecorder.prepare();
+                } catch (IllegalStateException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                mSleepTask.run();
             }
-            mSleepTask.run();
-
         }
+
+
 
         getWindowManager().getDefaultDisplay().getSize(size);
     }
     private Runnable mSleepTask = new Runnable() {
         public void run() {
 
-            mRecorder.start();
-            mHandler.postDelayed(eventSound, 250);
+            if(isSoundActivated) {
+                isSoundActivated = false;
+                mRecorder.start();
+                mHandler.postDelayed(eventSound, 250);
+            }
         }
     };
 
@@ -225,7 +233,6 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
             }
         }
     }
-
 
 
     private Handler shakeDiceHandler;
@@ -423,6 +430,7 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
         } else {
             stopGame();
             t.cancel();
+            mSound.stop();
         }
 
 
