@@ -1,7 +1,9 @@
 package com.android.diceroll;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.hardware.Sensor;
@@ -378,6 +380,22 @@ public class DiceActivity extends AppCompatActivity implements View.OnTouchListe
         gameStarted = false;
         buttonStart.setText(TextConstants.START);
         state = State.STOP;
+        SharedPreferences sharedPref =
+                getApplicationContext().getSharedPreferences("TheFileName", Context.MODE_PRIVATE);
+
+        int musicState = sharedPref.getInt("score", 0);
+        if(musicState > score){
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putInt("score", musicState);
+            editor.apply();
+        }else{
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putInt("score", score);
+            editor.apply();
+        }
+
+
+
     }
 
     /**
